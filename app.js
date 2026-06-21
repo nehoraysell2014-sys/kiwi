@@ -1,5 +1,5 @@
 // Kiwi Educational Assistant - Application Logic
-import { auth, signInAnonymously, db, doc, getDoc, setDoc, updateDoc, increment } from './firebase.js';
+import { auth, signInAnonymously, onAuthStateChanged, db, doc, getDoc, setDoc, updateDoc, increment } from './firebase.js';
 
 // DOM Elements
 const bodyEl = document.body;
@@ -562,6 +562,12 @@ async function askGemini(promptText, chatHistoryList = []) {
     throw new Error('MISSING_API_KEY');
   }
 
+  // Ensure user is authenticated before sending request
+  const currentUid = auth.currentUser ? auth.currentUser.uid : userUid;
+  if (!currentUid) {
+    throw new Error('User not found. Please wait for authentication to complete or refresh the page.');
+  }
+
   const model = "google/gemini-2.5-flash-lite";
   const url = `https://openrouter.ai/api/v1/chat/completions`;
 
@@ -609,7 +615,8 @@ Strict Educational Rules:
     model: model,
     messages: messages,
     temperature: 0.7,
-    max_tokens: 1500
+    max_tokens: 1500,
+    user: currentUid
   };
 
   const maxRetries = 5;
@@ -1233,23 +1240,35 @@ if (lockScreenForm) {
 }
 
 // Initialize app when window loads
-window.onload = async () => {
-  try {
-    const userCredential = await signInAnonymously(auth);
-    userUid = userCredential.user.uid;
-    
-    const lockoutRef = doc(db, 'lockouts', userUid);
-    const lockoutSnap = await getDoc(lockoutRef);
-    if (lockoutSnap.exists() && lockoutSnap.data().locked) {
-      showLockedOutState();
+window.onload = () => {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      userUid = user.uid;
+      try {
+        const lockoutRef = doc(db, 'lockouts', userUid);
+        const lockoutSnap = await getDoc(lockoutRef);
+        if (lockoutSnap.exists() && lockoutSnap.data().locked) {
+          showLockedOutState();
+        }
+        
+        // Initialize the app UI only once
+        if (!window.appInitialized) {
+          window.appInitialized = true;
+          init();
+        }
+      } catch (error) {
+        console.error("Error retrieving lockout state:", error);
+      }
+    } else {
+      try {
+        await signInAnonymously(auth);
+      } catch (error) {
+        console.error("Firebase Auth Error Full:", error);
+        console.error("Firebase Auth Error Message:", error.message);
+        console.error("Firebase Auth Error Code:", error.code);
+        lockScreenError.textContent = "Error connecting to authentication server: " + (error.message || error);
+        lockScreenError.classList.remove('hidden');
+      }
     }
-    
-    init();
-  } catch (error) {
-    console.error("Firebase Auth Error Full:", error);
-    console.error("Firebase Auth Error Message:", error.message);
-    console.error("Firebase Auth Error Code:", error.code);
-    lockScreenError.textContent = "Error connecting to authentication server: " + (error.message || error);
-    lockScreenError.classList.remove('hidden');
-  }
+  });
 };

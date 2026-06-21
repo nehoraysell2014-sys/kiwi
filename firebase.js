@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInAnonymously } from 'firebase/auth';
+import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -29,4 +29,4 @@ try {
   console.error("Firebase Initialization Error:", error);
 }
 
-export { app, auth, db, signInAnonymously, doc, getDoc, setDoc, updateDoc, increment };
+export { app, auth, db, signInAnonymously, onAuthStateChanged, doc, getDoc, setDoc, updateDoc, increment };
