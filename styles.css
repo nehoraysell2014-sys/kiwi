@@ -1308,6 +1308,7 @@ html[dir="rtl"] .toast.error {
    Responsive Breakpoints
    ========================================================================== */
 @media (max-width: 768px) {
+  /* Sidebar Mobile Layout */
   .app-sidebar {
     position: fixed;
     top: 0;
@@ -1331,26 +1332,91 @@ html[dir="rtl"] .toast.error {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
   }
   
   .mobile-menu-btn {
     display: block;
+    min-width: 44px;
+    min-height: 44px;
   }
   
-  .message {
-    max-width: 90%;
-  }
-  
+  /* Chat Header Mobile Layout */
   .chat-header {
-    padding: 0 16px;
+    padding: 0 8px;
+    height: auto;
+    min-height: 64px;
+  }
+
+  .header-avatar-container {
+    width: 36px;
+    height: 36px;
+  }
+
+  .header-title-row h3 {
+    font-size: 14px;
+  }
+
+  .header-tag {
+    font-size: 9px;
+    padding: 2px 4px;
   }
   
+  .theme-toggle-btn, .clear-chat-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Chat Messages Mobile Layout */
   .chat-messages-container {
-    padding: 16px;
+    padding: 16px 12px;
+    gap: 16px;
+  }
+
+  .message {
+    max-width: 95%;
+    gap: 8px;
   }
   
+  .message-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .message-bubble {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  
+  /* Chat Input Area Mobile Layout */
   .chat-input-bar {
-    padding: 12px 16px 16px 16px;
+    padding: 8px 12px 16px 12px;
+  }
+
+  .input-container {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .input-container textarea {
+    font-size: 16px;
+    padding: 0;
+  }
+
+  .input-actions-wrapper {
+    justify-content: flex-end;
+    margin-bottom: 0;
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+  }
+
+  .input-action-icon,
+  .send-btn {
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 
@@ -1412,4 +1478,46 @@ html[dir="rtl"] .toast.error {
   color: #EF4444;
   margin-top: 16px;
   font-size: 14px;
+}
+
+/* ==========================================================================
+   Lock Screen Mobile Layout
+   ========================================================================== */
+@media (max-width: 768px) {
+  .lock-screen-container {
+    padding: 16px;
+    align-items: center;
+  }
+  
+  .lock-screen-box {
+    padding: 32px 20px;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .lock-screen-logo {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+  }
+  
+  .lock-screen-box h2 {
+    font-size: 22px;
+  }
+  
+  .lock-screen-box p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .lock-screen-form input {
+    font-size: 16px;
+    padding: 14px 16px;
+  }
+  
+  .lock-screen-form .btn {
+    padding: 14px 16px;
+    font-size: 16px;
+    min-height: 48px;
+  }
 }
