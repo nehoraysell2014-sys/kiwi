@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiwi - Educational Assistant Chatbot</title>
+  <meta name="description" content="Meet Kiwi, your friendly, encouraging, and clear AI-driven educational assistant. Get help with homework, exams, and study guides in Math, Science, History, and Literature.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="module" crossorigin src="/KIWI/assets/index-BSZvI2FY.js"></script>
+  <link rel="stylesheet" crossorigin href="/KIWI/assets/index-B9RisrZo.css">
+</head>
+<body class="theme-default">
+  <h1 class="sr-only">Kiwi - Educational Assistant Chatbot</h1>
+
+  <!-- Lock Screen Overlay -->
+  <div id="lock-screen" class="lock-screen-container">
+    <div class="lock-screen-box">
+      <img src="/KIWI/assets/kiwi-avatar-BliLVAaP.png" alt="Kiwi Mascot" class="lock-screen-logo">
+      <h2 data-i18n="lock-screen-title">Welcome to Kiwi</h2>
+      <p data-i18n="lock-screen-desc">Please enter the site password to continue.</p>
+      <form id="lock-screen-form" class="lock-screen-form">
+        <input type="password" id="site-password-input" placeholder="Enter Password" required>
+        <button type="submit" class="btn btn-primary btn-block">Unlock</button>
+      </form>
+      <div id="lock-screen-error" class="lock-screen-error hidden"></div>
+    </div>
+  </div>
+
+  <!-- Main App Container -->
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside class="app-sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <img src="/KIWI/assets/kiwi-avatar-BliLVAaP.png" alt="Kiwi Mascot" class="brand-logo" id="sidebar-logo">
+          <div class="brand-text">
+            <h2>Kiwi</h2>
+            <p data-i18n="tagline">Study Assistant</p>
+          </div>
+        </div>
+        <button class="mobile-close-btn" id="mobile-sidebar-close" aria-label="Close Sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- Settings Panels -->
+      <div class="sidebar-scroll-area">
+        
+        <!-- Language Select Widget -->
+        <section class="sidebar-section" aria-labelledby="heading-language">
+          <h3 id="heading-language" class="section-title">
+            <i data-lucide="languages"></i>
+            <span data-i18n="language-settings">Language</span>
+          </h3>
+          <div class="language-toggle">
+            <button id="lang-en-btn" class="lang-btn active" data-lang="en">English</button>
+            <button id="lang-he-btn" class="lang-btn" data-lang="he">עברית (RTL)</button>
+          </div>
+        </section>
+
+        <!-- Subjects Widget -->
+        <section class="sidebar-section" aria-labelledby="heading-subjects">
+          <h3 id="heading-subjects" class="section-title">
+            <i data-lucide="book-open"></i>
+            <span data-i18n="subject-focus">Subject Focus</span>
+          </h3>
+          <div class="subjects-grid">
+            <button id="subject-general-btn" class="subject-card active" data-subject="general">
+              <i data-lucide="sparkles"></i>
+              <span data-i18n="sub-general">General</span>
+            </button>
+            <button id="subject-math-btn" class="subject-card" data-subject="math">
+              <i data-lucide="binary"></i>
+              <span data-i18n="sub-math">Math</span>
+            </button>
+            <button id="subject-science-btn" class="subject-card" data-subject="science">
+              <i data-lucide="beaker"></i>
+              <span data-i18n="sub-science">Science</span>
+            </button>
+            <button id="subject-history-btn" class="subject-card" data-subject="history">
+              <i data-lucide="landmark"></i>
+              <span data-i18n="sub-history">History</span>
+            </button>
+            <button id="subject-literature-btn" class="subject-card" data-subject="literature">
+              <i data-lucide="pen-tool"></i>
+              <span data-i18n="sub-literature">Literature</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Grade Selector Widget -->
+        <section class="sidebar-section" aria-labelledby="heading-grade">
+          <h3 id="heading-grade" class="section-title">
+            <i data-lucide="graduation-cap"></i>
+            <span data-i18n="grade-level">Grade Level</span>
+          </h3>
+          <div class="select-wrapper">
+            <select id="grade-level-select" class="custom-select" aria-label="Grade Level">
+              <option value="elementary" data-i18n="grade-elementary">Elementary School</option>
+              <option value="middle" data-i18n="grade-middle" selected>Middle School</option>
+              <option value="high" data-i18n="grade-high">High School</option>
+              <option value="university" data-i18n="grade-university">University</option>
+            </select>
+            <i data-lucide="chevron-down" class="select-arrow"></i>
+          </div>
+        </section>
+
+
+
+        <!-- Extra Interactive Widgets -->
+        <div class="extra-widgets-divider"></div>
+
+        <!-- Daily Fact Widget -->
+        <section class="sidebar-section fact-widget" aria-labelledby="heading-fact">
+          <h3 id="heading-fact" class="section-title">
+            <i data-lucide="lightbulb" class="icon-glow"></i>
+            <span data-i18n="daily-fact">Daily Fun Fact</span>
+          </h3>
+          <div class="widget-card fact-card">
+            <p id="fact-content" data-i18n="fact-placeholder">Click below to learn something awesome today!</p>
+            <button id="generate-fact-btn" class="btn btn-accent btn-sm btn-block">
+              <i data-lucide="refresh-cw"></i>
+              <span data-i18n="get-fact">Learn Something New!</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Quick Quiz Widget -->
+        <section class="sidebar-section quiz-widget" aria-labelledby="heading-quiz">
+          <h3 id="heading-quiz" class="section-title">
+            <i data-lucide="help-circle" class="icon-glow"></i>
+            <span data-i18n="quick-quiz">Quick Quiz</span>
+          </h3>
+          <div class="widget-card quiz-card">
+            <div id="quiz-question-container">
+              <p id="quiz-question" class="quiz-question-text">Select a subject above to get a quiz!</p>
+              <div id="quiz-options" class="quiz-options-list">
+                <!-- Options populated dynamically -->
+              </div>
+              <button id="submit-quiz-btn" class="btn btn-primary btn-sm btn-block" disabled>
+                <span data-i18n="submit-answer">Submit Answer</span>
+              </button>
+            </div>
+            <div id="quiz-feedback" class="quiz-feedback-box hidden">
+              <p id="quiz-feedback-text"></p>
+              <button id="next-quiz-btn" class="btn btn-secondary btn-sm btn-block">
+                <span data-i18n="next-quiz">Next Quiz</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </aside>
+
+    <!-- Main Chat Window Area -->
+    <main class="chat-viewport">
+      
+      <!-- Top Chat Header -->
+      <header class="chat-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" id="mobile-sidebar-toggle" aria-label="Open Sidebar">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="header-avatar-container">
+            <img src="/KIWI/assets/kiwi-avatar-BliLVAaP.png" alt="Kiwi Avatar" class="header-avatar" id="chat-header-avatar">
+            <span class="status-indicator online"></span>
+          </div>
+          <div class="header-bot-info">
+            <div class="header-title-row">
+              <h3>Kiwi</h3>
+              <div class="header-badges">
+                <span id="badge-subject" class="header-tag general-tag">General</span>
+                <span id="badge-grade" class="header-tag grade-tag">Middle School</span>
+                <span id="badge-tokens" class="header-tag token-tag" style="background-color: var(--color-general-light); color: var(--color-general);">Tokens: 0</span>
+              </div>
+            </div>
+            <p class="status-msg" data-i18n="kiwi-status">Active Study Assistant</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <button id="theme-mode-btn" class="theme-toggle-btn" aria-label="Toggle Dark Mode">
+            <i data-lucide="moon"></i>
+          </button>
+          <button id="clear-chat-btn" class="clear-chat-btn" aria-label="Clear Chat History">
+            <i data-lucide="trash-2"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Message Log -->
+      <div class="chat-messages-container" id="chat-messages" role="log">
+        <!-- Messages will be injected here dynamically -->
+      </div>
+
+      <!-- Typing Indicator -->
+      <div class="typing-indicator-container hidden" id="typing-indicator">
+        <div class="typing-bubble">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+
+      <!-- Quick Suggestion Prompts -->
+      <div class="suggestions-container" id="suggestions-box">
+        <!-- populated dynamically based on subject -->
+      </div>
+
+      <!-- Chat Input Area -->
+      <footer class="chat-input-bar">
+        <form id="chat-form" class="chat-input-form" onsubmit="return false;">
+          <div class="input-container">
+            <textarea id="user-message-input" rows="1" placeholder="Ask Kiwi a question about your studies..." data-i18n-placeholder="input-placeholder" aria-label="Your Message"></textarea>
+            
+            <div class="input-actions-wrapper">
+              <!-- Text Direction Auto/Ltr/Rtl Toggle -->
+              <button type="button" id="dir-toggle-btn" class="input-action-icon" aria-label="Toggle text direction" title="Toggle text direction">
+                <i data-lucide="text-cursor-input"></i>
+              </button>
+              
+              <!-- Voice Input Placeholder / Trigger -->
+              <button type="button" id="voice-input-btn" class="input-action-icon" aria-label="Voice Input">
+                <i data-lucide="mic"></i>
+              </button>
+              
+              <!-- Send Button -->
+              <button type="submit" id="send-msg-btn" class="send-btn" aria-label="Send Message">
+                <i data-lucide="send-horizontal"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Javascript Main Execution -->
+</body>
+</html>
