@@ -1310,113 +1310,113 @@ html[dir="rtl"] .toast.error {
 @media (max-width: 768px) {
   /* Sidebar Mobile Layout */
   .app-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
     transform: translateX(-100%);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-lg) !important;
   }
   
   html[dir="rtl"] .app-sidebar {
-    left: auto;
-    right: 0;
+    left: auto !important;
+    right: 0 !important;
     transform: translateX(100%);
   }
   
   .app-sidebar.mobile-open {
-    transform: translateX(0);
+    transform: translateX(0) !important;
   }
   
   .mobile-close-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
   
   .mobile-menu-btn {
-    display: block;
-    min-width: 44px;
-    min-height: 44px;
+    display: block !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
   
   /* Chat Header Mobile Layout */
   .chat-header {
-    padding: 0 8px;
-    height: auto;
-    min-height: 64px;
+    padding: 0 8px !important;
+    height: auto !important;
+    min-height: 64px !important;
   }
 
   .header-avatar-container {
-    width: 36px;
-    height: 36px;
+    width: 36px !important;
+    height: 36px !important;
   }
 
   .header-title-row h3 {
-    font-size: 14px;
+    font-size: 14px !important;
   }
 
   .header-tag {
-    font-size: 9px;
-    padding: 2px 4px;
+    font-size: 9px !important;
+    padding: 2px 4px !important;
   }
   
   .theme-toggle-btn, .clear-chat-btn {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
   
   /* Chat Messages Mobile Layout */
   .chat-messages-container {
-    padding: 16px 12px;
-    gap: 16px;
+    padding: 16px 12px !important;
+    gap: 16px !important;
   }
 
   .message {
-    max-width: 95%;
-    gap: 8px;
+    max-width: 95% !important;
+    gap: 8px !important;
   }
   
   .message-avatar {
-    width: 28px;
-    height: 28px;
+    width: 28px !important;
+    height: 28px !important;
   }
 
   .message-bubble {
-    padding: 10px 14px;
-    font-size: 13px;
+    padding: 10px 14px !important;
+    font-size: 13px !important;
   }
   
   /* Chat Input Area Mobile Layout */
   .chat-input-bar {
-    padding: 8px 12px 16px 12px;
+    padding: 8px 12px 16px 12px !important;
   }
 
   .input-container {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 10px 12px;
-    gap: 8px;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 10px 12px !important;
+    gap: 8px !important;
   }
 
   .input-container textarea {
-    font-size: 16px;
-    padding: 0;
+    font-size: 16px !important;
+    padding: 0 !important;
   }
 
   .input-actions-wrapper {
-    justify-content: flex-end;
-    margin-bottom: 0;
-    border-top: 1px solid var(--border-color);
-    padding-top: 8px;
+    justify-content: flex-end !important;
+    margin-bottom: 0 !important;
+    border-top: 1px solid var(--border-color) !important;
+    padding-top: 8px !important;
   }
 
   .input-action-icon,
   .send-btn {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
 }
 
@@ -1485,39 +1485,39 @@ html[dir="rtl"] .toast.error {
    ========================================================================== */
 @media (max-width: 768px) {
   .lock-screen-container {
-    padding: 16px;
-    align-items: center;
+    padding: 16px !important;
+    align-items: center !important;
   }
   
   .lock-screen-box {
-    padding: 32px 20px;
-    width: 100%;
-    max-width: 100%;
+    padding: 32px 20px !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
   
   .lock-screen-logo {
-    width: 64px;
-    height: 64px;
-    margin-bottom: 16px;
+    width: 64px !important;
+    height: 64px !important;
+    margin-bottom: 16px !important;
   }
   
   .lock-screen-box h2 {
-    font-size: 22px;
+    font-size: 22px !important;
   }
   
   .lock-screen-box p {
-    font-size: 14px;
-    margin-bottom: 20px;
+    font-size: 14px !important;
+    margin-bottom: 20px !important;
   }
   
   .lock-screen-form input {
-    font-size: 16px;
-    padding: 14px 16px;
+    font-size: 16px !important;
+    padding: 14px 16px !important;
   }
   
   .lock-screen-form .btn {
-    padding: 14px 16px;
-    font-size: 16px;
-    min-height: 48px;
+    padding: 14px 16px !important;
+    font-size: 16px !important;
+    min-height: 48px !important;
   }
 }
