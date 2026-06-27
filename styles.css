@@ -1171,6 +1171,58 @@ html[dir="rtl"] .message.bot .message-bubble {
   margin-bottom: 2px;
 }
 
+/* Inline Model Selector inside Chat Input */
+.inline-model-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 4px; /* Space between selector and the icons */
+}
+
+html[dir="rtl"] .inline-model-wrapper {
+  margin-right: 0;
+  margin-left: 4px;
+}
+
+.inline-select {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 26px 6px 12px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.inline-select:hover, .inline-select:focus {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  outline: none;
+}
+
+.inline-select-arrow {
+  position: absolute;
+  right: 8px;
+  pointer-events: none;
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+}
+
+html[dir="rtl"] .inline-select-arrow {
+  right: auto;
+  left: 8px;
+}
+
+html[dir="rtl"] .inline-select {
+  padding: 6px 12px 6px 26px;
+}
+
 .input-action-icon {
   background: transparent;
   border: none;
