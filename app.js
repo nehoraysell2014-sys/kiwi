@@ -10,6 +10,7 @@ const langEnBtn = document.getElementById('lang-en-btn');
 const langHeBtn = document.getElementById('lang-he-btn');
 const subjectCards = document.querySelectorAll('.subject-card');
 const gradeSelect = document.getElementById('grade-level-select');
+const modelSelect = document.getElementById('model-select');
 const factContent = document.getElementById('fact-content');
 const generateFactBtn = document.getElementById('generate-fact-btn');
 const quizQuestion = document.getElementById('quiz-question');
@@ -233,6 +234,7 @@ let state = {
   language: localStorage.getItem('kiwi_lang') || 'en',
   subject: localStorage.getItem('kiwi_subject') || 'general',
   grade: localStorage.getItem('kiwi_grade') || 'middle',
+  selectedModel: localStorage.getItem('kiwi_model') || 'openai/gpt-4o-mini',
   theme: localStorage.getItem('kiwi_theme') || 'light',
   chatHistory: [], // stores local session logs for context [{ role: "user" | "model", text: "" }]
   currentQuiz: null,
@@ -282,6 +284,11 @@ function init() {
   // 4. Setup Grade level select
   gradeSelect.value = state.grade;
   badgeGrade.textContent = getGradeTranslation(state.grade);
+
+  // Setup Model level select
+  if (modelSelect) {
+    modelSelect.value = state.selectedModel;
+  }
 
   // 5. Setup Suggestions
   renderSuggestions();
@@ -568,7 +575,7 @@ async function askGemini(promptText, chatHistoryList = []) {
     throw new Error('User not found. Please wait for authentication to complete or refresh the page.');
   }
 
-  const model = "google/gemini-2.5-flash-lite";
+  const model = state.selectedModel;
   const url = `https://openrouter.ai/api/v1/chat/completions`;
 
   // Assemble system instructions
@@ -1131,7 +1138,15 @@ gradeSelect.onchange = (e) => {
   loadQuiz();
 };
 
-
+// Model selection events
+if (modelSelect) {
+  modelSelect.onchange = (e) => {
+    const modelVal = e.target.value;
+    state.selectedModel = modelVal;
+    localStorage.setItem('kiwi_model', modelVal);
+    showToast(state.language === 'he' ? 'מודל עודכן' : 'Model updated', 'success');
+  };
+}
 
 // Textarea auto-grow adjustment
 userMessageInput.oninput = (e) => {
