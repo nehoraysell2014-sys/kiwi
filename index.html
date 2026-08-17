@@ -114,9 +114,22 @@
           </div>
         </section>
 
-
-
-
+        <!-- Change Password / Security Settings Widget -->
+        <section class="sidebar-section" aria-labelledby="heading-security">
+          <h3 id="heading-security" class="section-title">
+            <i data-lucide="key-round"></i>
+            <span data-i18n="security-settings">Security Settings</span>
+          </h3>
+          <div class="widget-card security-card" style="padding: 12px; background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+            <form id="change-password-form" class="change-password-form">
+              <input type="password" id="new-password-input" class="custom-input" placeholder="New Password" data-i18n-placeholder="new-password-placeholder" required minlength="1" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background-color: var(--bg-input); color: var(--text-primary); margin-bottom: 8px;">
+              <button type="submit" id="save-password-btn" class="btn btn-secondary btn-sm btn-block" style="width: 100%;">
+                <i data-lucide="check"></i>
+                <span data-i18n="save-password">Update Password</span>
+              </button>
+            </form>
+          </div>
+        </section>
 
         <!-- Extra Interactive Widgets -->
         <div class="extra-widgets-divider"></div>

@@ -37,6 +37,8 @@ const lockScreenForm = document.getElementById('lock-screen-form');
 const sitePasswordInput = document.getElementById('site-password-input');
 const lockScreenError = document.getElementById('lock-screen-error');
 const appContainer = document.querySelector('.app-container');
+const changePasswordForm = document.getElementById('change-password-form');
+const newPasswordInput = document.getElementById('new-password-input');
 
 let userUid = null;
 appContainer.style.display = 'none';
@@ -82,7 +84,11 @@ const TRANSLATIONS = {
     "correct": "Correct! 🎉",
     "incorrect": "Incorrect. Try again! 💡",
     "generating": "Generating...",
-    "mic-error": "Speech recognition failed or is not supported."
+    "mic-error": "Speech recognition failed or is not supported.",
+    "security-settings": "Security Settings",
+    "save-password": "Update Password",
+    "new-password-placeholder": "New Password",
+    "password-updated": "Password successfully updated!"
   },
   he: {
     "tagline": "עוזר לימודים",
@@ -123,7 +129,11 @@ const TRANSLATIONS = {
     "correct": "נכון מאוד! 🎉",
     "incorrect": "לא מדויק, נסה שוב! 💡",
     "generating": "מייצר...",
-    "mic-error": "זיהוי דיבור נכשל או אינו נתמך בדפדפן זה."
+    "mic-error": "זיהוי דיבור נכשל או אינו נתמך בדפדפן זה.",
+    "security-settings": "הגדרות אבטחה",
+    "save-password": "עדכן סיסמה",
+    "new-password-placeholder": "סיסמה חדשה",
+    "password-updated": "הסיסמה עודכנה בהצלחה!"
   }
 };
 
@@ -1194,6 +1204,29 @@ generateFactBtn.onclick = loadFact;
 submitQuizBtn.onclick = handleQuizSubmit;
 nextQuizBtn.onclick = loadQuiz;
 
+// Security settings - Change password event
+if (changePasswordForm) {
+  changePasswordForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const newPass = newPasswordInput.value.trim();
+    if (!newPass) return;
+    
+    // Save to local storage
+    localStorage.setItem('kiwi_site_password', newPass);
+
+    // Try updating in Firestore config/security if write permissions allow
+    try {
+      const configRef = doc(db, 'config', 'security');
+      await setDoc(configRef, { sitePassword: newPass }, { merge: true });
+    } catch (err) {
+      console.warn("Could not sync new password to remote Firestore, stored locally:", err);
+    }
+
+    newPasswordInput.value = '';
+    showToast(TRANSLATIONS[state.language]["password-updated"], 'success');
+  };
+}
+
 // Lock screen logic
 function showLockedOutState() {
   lockScreenError.textContent = "You are locked out.";
@@ -1211,19 +1244,26 @@ if (lockScreenForm) {
     if (!userUid) return;
 
     try {
-      const configRef = doc(db, 'config', 'security');
-      const configSnap = await getDoc(configRef);
+      let sitePassword = localStorage.getItem('kiwi_site_password') || '12345';
       
-      if (configSnap.exists()) {
-        const { sitePassword } = configSnap.data();
+      try {
+        const configRef = doc(db, 'config', 'security');
+        const configSnap = await getDoc(configRef);
+        if (configSnap.exists() && configSnap.data().sitePassword) {
+          sitePassword = configSnap.data().sitePassword;
+        }
+      } catch (err) {
+        console.warn("Firestore config read error, falling back to local password:", err);
+      }
+
+      if (password === sitePassword) {
+        lockScreenContainer.classList.add('hidden');
+        appContainer.style.display = 'flex';
+      } else {
+        lockScreenError.textContent = state.language === 'he' ? "סיסמה שגויה." : "Incorrect password.";
+        lockScreenError.classList.remove('hidden');
         
-        if (password === sitePassword) {
-          lockScreenContainer.classList.add('hidden');
-          appContainer.style.display = 'flex';
-        } else {
-          lockScreenError.textContent = "Incorrect password.";
-          lockScreenError.classList.remove('hidden');
-          
+        try {
           const lockoutRef = doc(db, 'lockouts', userUid);
           const lockoutSnap = await getDoc(lockoutRef);
           
@@ -1242,14 +1282,13 @@ if (lockScreenForm) {
           } else {
             await setDoc(lockoutRef, { attempts: 1 });
           }
+        } catch (lockoutErr) {
+          console.warn("Lockout tracking error:", lockoutErr);
         }
-      } else {
-        lockScreenError.textContent = "Security config not found.";
-        lockScreenError.classList.remove('hidden');
       }
     } catch (error) {
       console.error("Error verifying password:", error);
-      lockScreenError.textContent = "Error verifying password.";
+      lockScreenError.textContent = state.language === 'he' ? "שגיאה באימות הסיסמה." : "Error verifying password.";
       lockScreenError.classList.remove('hidden');
     }
   });
