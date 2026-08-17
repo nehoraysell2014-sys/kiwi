@@ -15,8 +15,8 @@
   
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script type="module" crossorigin src="/kiwi/assets/index-CuWLysin.js"></script>
-  <link rel="stylesheet" crossorigin href="/kiwi/assets/index-DyCbNBBt.css">
+  <script type="module" crossorigin src="/assets/index-D1UDa5hv.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BsfB8ItB.css">
 </head>
 <body class="theme-default">
   <h1 class="sr-only">Kiwi - Educational Assistant Chatbot</h1>
@@ -24,7 +24,7 @@
   <!-- Lock Screen Overlay -->
   <div id="lock-screen" class="lock-screen-container">
     <div class="lock-screen-box">
-      <img src="/kiwi/assets/kiwi-avatar-BliLVAaP.png" alt="Kiwi Mascot" class="lock-screen-logo">
+      <img src="/assets/kiwi-avatar-BliLVAaP.png" alt="Kiwi Mascot" class="lock-screen-logo">
       <h2 data-i18n="lock-screen-title">Welcome to Kiwi</h2>
       <p data-i18n="lock-screen-desc">Please enter the site password to continue.</p>
       <form id="lock-screen-form" class="lock-screen-form">
@@ -42,7 +42,7 @@
     <aside class="app-sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="brand">
-          <img src="/kiwi/assets/kiwi-avatar-BliLVAaP.png" alt="Kiwi Mascot" class="brand-logo" id="sidebar-logo">
+          <img src="/assets/kiwi-avatar-BliLVAaP.png" alt="Kiwi Mascot" class="brand-logo" id="sidebar-logo">
           <div class="brand-text">
             <h2>Kiwi</h2>
             <p data-i18n="tagline">Study Assistant</p>
@@ -115,7 +115,22 @@
           </div>
         </section>
 
-
+        <!-- Change Password / Security Settings Widget -->
+        <section class="sidebar-section" aria-labelledby="heading-security">
+          <h3 id="heading-security" class="section-title">
+            <i data-lucide="key-round"></i>
+            <span data-i18n="security-settings">Security Settings</span>
+          </h3>
+          <div class="widget-card security-card" style="padding: 12px; background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+            <form id="change-password-form" class="change-password-form">
+              <input type="password" id="new-password-input" class="custom-input" placeholder="New Password" data-i18n-placeholder="new-password-placeholder" required minlength="1" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background-color: var(--bg-input); color: var(--text-primary); margin-bottom: 8px;">
+              <button type="submit" id="save-password-btn" class="btn btn-secondary btn-sm btn-block" style="width: 100%;">
+                <i data-lucide="check"></i>
+                <span data-i18n="save-password">Update Password</span>
+              </button>
+            </form>
+          </div>
+        </section>
 
         <!-- Extra Interactive Widgets -->
         <div class="extra-widgets-divider"></div>
@@ -173,7 +188,7 @@
             <i data-lucide="menu"></i>
           </button>
           <div class="header-avatar-container">
-            <img src="/kiwi/assets/kiwi-avatar-BliLVAaP.png" alt="Kiwi Avatar" class="header-avatar" id="chat-header-avatar">
+            <img src="/assets/kiwi-avatar-BliLVAaP.png" alt="Kiwi Avatar" class="header-avatar" id="chat-header-avatar">
             <span class="status-indicator online"></span>
           </div>
           <div class="header-bot-info">
@@ -224,6 +239,16 @@
             <textarea id="user-message-input" rows="1" placeholder="Ask Kiwi a question about your studies..." data-i18n-placeholder="input-placeholder" aria-label="Your Message"></textarea>
             
             <div class="input-actions-wrapper">
+              <!-- Inline Model Selector -->
+              <div class="inline-model-wrapper">
+                <select id="model-select" class="inline-select" aria-label="Model Selection">
+                  <option value="openai/gpt-4o-mini">קיווי קל</option>
+                  <option value="meta-llama/llama-3.3-70b-instruct">קיווי בינוני</option>
+                  <option value="google/gemini-2.5-pro">קיווי כבד</option>
+                </select>
+                <i data-lucide="chevron-down" class="inline-select-arrow"></i>
+              </div>
+
               <!-- Text Direction Auto/Ltr/Rtl Toggle -->
               <button type="button" id="dir-toggle-btn" class="input-action-icon" aria-label="Toggle text direction" title="Toggle text direction">
                 <i data-lucide="text-cursor-input"></i>
