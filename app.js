@@ -256,13 +256,17 @@ let state = {
 
 // Get API Key helper (returns environment variable key directly)
 function getApiKey() {
-  const envKey = import.meta.env.VITE_GEMINI_API_KEY;
-  const directKey = import.meta.env.GEMINI_API_KEY;
-  if (envKey && envKey !== 'your_gemini_api_key_here') {
+  const envKey = import.meta.env.VITE_OPENROUTER_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+  const directKey = import.meta.env.OPENROUTER_API_KEY || import.meta.env.GEMINI_API_KEY;
+  const localKey = localStorage.getItem('kiwi_api_key');
+  if (envKey && envKey !== 'your_gemini_api_key_here' && envKey !== 'your_api_key_here') {
     return envKey;
   }
-  if (directKey && directKey !== 'your_gemini_api_key_here') {
+  if (directKey && directKey !== 'your_gemini_api_key_here' && directKey !== 'your_api_key_here') {
     return directKey;
+  }
+  if (localKey) {
+    return localKey;
   }
   return '';
 }
