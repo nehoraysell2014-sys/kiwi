@@ -21,7 +21,6 @@ const quizFeedbackText = document.getElementById('quiz-feedback-text');
 const nextQuizBtn = document.getElementById('next-quiz-btn');
 const badgeSubject = document.getElementById('badge-subject');
 const badgeGrade = document.getElementById('badge-grade');
-const badgeTokens = document.getElementById('badge-tokens');
 const themeModeBtn = document.getElementById('theme-mode-btn');
 const clearChatBtn = document.getElementById('clear-chat-btn');
 const chatMessagesContainer = document.getElementById('chat-messages');
@@ -239,22 +238,20 @@ const SUGGESTIONS = {
   }
 };
 
+const savedModel = localStorage.getItem('kiwi_model');
+const validModels = ['meta-llama/llama-3.1-8b-instruct:free', 'google/gemma-2-9b-it:free'];
+const defaultModel = validModels.includes(savedModel) ? savedModel : 'meta-llama/llama-3.1-8b-instruct:free';
+
 // Application State
 let state = {
   language: localStorage.getItem('kiwi_lang') || 'en',
   subject: localStorage.getItem('kiwi_subject') || 'general',
   grade: localStorage.getItem('kiwi_grade') || 'middle',
-  selectedModel: localStorage.getItem('kiwi_model') || 'openai/gpt-4o-mini',
+  selectedModel: defaultModel,
   theme: localStorage.getItem('kiwi_theme') || 'light',
   chatHistory: [], // stores local session logs for context [{ role: "user" | "model", text: "" }]
   currentQuiz: null,
-  selectedQuizOptionIndex: null,
-  totalTokens: parseInt(localStorage.getItem('kiwi_tokens')) || 0,
-  promptTokens: parseInt(localStorage.getItem('kiwi_prompt_tokens')) || parseInt(localStorage.getItem('kiwi_tokens')) || 0,
-  completionTokens: parseInt(localStorage.getItem('kiwi_completion_tokens')) || 0,
-  sessionTokens: 0,
-  sessionPromptTokens: 0,
-  sessionCompletionTokens: 0
+  selectedQuizOptionIndex: null
 };
 
 // Get API Key helper (returns environment variable key directly)
@@ -313,21 +310,6 @@ function init() {
   // 9. Initialise Lucide Icons
   if (window.lucide) {
     window.lucide.createIcons();
-  }
-
-  // 10. Update Token UI
-  updateTokenUI();
-}
-
-function updateTokenUI() {
-  if (badgeTokens) {
-    const cost = (state.promptTokens / 1000000) * 0.10 + (state.completionTokens / 1000000) * 0.40;
-    let costStr = cost.toFixed(4);
-    if (cost === 0) costStr = "0.00";
-    else if (cost < 0.0001) costStr = "<0.0001";
-    
-    const tokenLabel = state.language === 'he' ? 'טוקנים' : 'Tokens';
-    badgeTokens.textContent = `${tokenLabel}: ${state.totalTokens.toLocaleString()} ($${costStr})`;
   }
 }
 
@@ -679,22 +661,6 @@ Strict Educational Rules:
       }
 
       const responseData = await response.json();
-      
-      if (responseData.usage && responseData.usage.total_tokens) {
-        state.totalTokens += responseData.usage.total_tokens;
-        localStorage.setItem('kiwi_tokens', state.totalTokens.toString());
-        
-        if (responseData.usage.prompt_tokens) {
-          state.promptTokens += responseData.usage.prompt_tokens;
-          localStorage.setItem('kiwi_prompt_tokens', state.promptTokens.toString());
-        }
-        if (responseData.usage.completion_tokens) {
-          state.completionTokens += responseData.usage.completion_tokens;
-          localStorage.setItem('kiwi_completion_tokens', state.completionTokens.toString());
-        }
-        updateTokenUI();
-      }
-      
       return responseData.choices?.[0]?.message?.content || '';
     } catch (error) {
       if (attempt === maxRetries) {

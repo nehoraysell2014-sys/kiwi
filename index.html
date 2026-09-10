@@ -196,7 +196,7 @@
               <div class="header-badges">
                 <span id="badge-subject" class="header-tag general-tag">General</span>
                 <span id="badge-grade" class="header-tag grade-tag">Middle School</span>
-                <span id="badge-tokens" class="header-tag token-tag" style="background-color: var(--color-general-light); color: var(--color-general);">Tokens: 0</span>
+                <span class="header-tag free-badge" style="background-color: var(--color-general-light); color: var(--color-general);">מאגר שאלות תשובות מבוסס AI בחינם</span>
               </div>
             </div>
             <p class="status-msg" data-i18n="kiwi-status">Active Study Assistant</p>
@@ -241,9 +241,8 @@
               <!-- Inline Model Selector -->
               <div class="inline-model-wrapper">
                 <select id="model-select" class="inline-select" aria-label="Model Selection">
-                  <option value="openai/gpt-4o-mini">קיווי קל</option>
-                  <option value="meta-llama/llama-3.3-70b-instruct">קיווי בינוני</option>
-                  <option value="google/gemini-2.5-pro">קיווי כבד</option>
+                  <option value="meta-llama/llama-3.1-8b-instruct:free">קיווי מהיר (חינם)</option>
+                  <option value="google/gemma-2-9b-it:free">קיווי חכם (חינם)</option>
                 </select>
                 <i data-lucide="chevron-down" class="inline-select-arrow"></i>
               </div>
