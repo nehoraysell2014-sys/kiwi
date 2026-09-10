@@ -318,20 +318,28 @@ function updateLanguageUI() {
   const lang = state.language;
   document.documentElement.lang = lang;
   document.documentElement.dir = (lang === 'he') ? 'rtl' : 'ltr';
+  if (document.body) {
+    document.body.dir = (lang === 'he') ? 'rtl' : 'ltr';
+  }
 
   // Toggle button styles
-  if (lang === 'en') {
-    langEnBtn.classList.add('active');
-    langHeBtn.classList.remove('active');
-  } else {
-    langHeBtn.classList.add('active');
-    langEnBtn.classList.remove('active');
+  const btnEn = document.getElementById('lang-en-btn');
+  const btnHe = document.getElementById('lang-he-btn');
+
+  if (btnEn && btnHe) {
+    if (lang === 'en') {
+      btnEn.classList.add('active');
+      btnHe.classList.remove('active');
+    } else {
+      btnHe.classList.add('active');
+      btnEn.classList.remove('active');
+    }
   }
 
   // Translate DOM nodes with data-i18n attributes
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    if (TRANSLATIONS[lang][key]) {
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
       el.textContent = TRANSLATIONS[lang][key];
     }
   });
@@ -339,16 +347,20 @@ function updateLanguageUI() {
   // Translate placeholders
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
-    if (TRANSLATIONS[lang][key]) {
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
       el.placeholder = TRANSLATIONS[lang][key];
     }
   });
 
   // Update input placeholder in case it's custom
-  userMessageInput.placeholder = TRANSLATIONS[lang]["input-placeholder"];
+  if (userMessageInput && TRANSLATIONS[lang]) {
+    userMessageInput.placeholder = TRANSLATIONS[lang]["input-placeholder"];
+  }
 
   // Update badges
-  badgeGrade.textContent = getGradeTranslation(state.grade);
+  if (badgeGrade) {
+    badgeGrade.textContent = getGradeTranslation(state.grade);
+  }
   updateSubjectBadge();
   
   // Re-render suggestions
@@ -561,12 +573,6 @@ async function askGemini(promptText, chatHistoryList = []) {
     throw new Error('MISSING_API_KEY');
   }
 
-  // Ensure user is authenticated before sending request
-  const currentUid = auth.currentUser ? auth.currentUser.uid : userUid;
-  if (!currentUid) {
-    throw new Error('User not found. Please wait for authentication to complete or refresh the page.');
-  }
-
   const model = state.selectedModel;
   const url = `https://openrouter.ai/api/v1/chat/completions`;
 
@@ -615,8 +621,7 @@ Strict Educational Rules:
     model: model,
     messages: messages,
     temperature: 0.7,
-    max_tokens: 1500,
-    user: currentUid
+    max_tokens: 1500
   };
 
   const maxRetries = 5;
@@ -1075,23 +1080,33 @@ mobileSidebarToggleBtn.onclick = () => toggleSidebar(true);
 mobileSidebarCloseBtn.onclick = () => toggleSidebar(false);
 
 // Language toggling events
-langEnBtn.onclick = () => {
-  if (state.language === 'en') return;
-  state.language = 'en';
-  localStorage.setItem('kiwi_lang', 'en');
-  updateLanguageUI();
-  resetChat(true);
-  showToast('Switched to English', 'success');
-};
+const setupLangToggle = () => {
+  const btnEn = document.getElementById('lang-en-btn');
+  const btnHe = document.getElementById('lang-he-btn');
 
-langHeBtn.onclick = () => {
-  if (state.language === 'he') return;
-  state.language = 'he';
-  localStorage.setItem('kiwi_lang', 'he');
-  updateLanguageUI();
-  resetChat(true);
-  showToast('שונה לעברית', 'success');
+  if (btnEn) {
+    btnEn.onclick = (e) => {
+      e.preventDefault();
+      state.language = 'en';
+      localStorage.setItem('kiwi_lang', 'en');
+      updateLanguageUI();
+      resetChat(true);
+      showToast('Switched to English', 'success');
+    };
+  }
+
+  if (btnHe) {
+    btnHe.onclick = (e) => {
+      e.preventDefault();
+      state.language = 'he';
+      localStorage.setItem('kiwi_lang', 'he');
+      updateLanguageUI();
+      resetChat(true);
+      showToast('שונה לעברית', 'success');
+    };
+  }
 };
+setupLangToggle();
 
 // Subject cards events
 subjectCards.forEach(card => {
@@ -1206,8 +1221,6 @@ if (lockScreenForm) {
     e.preventDefault();
     const password = sitePasswordInput.value;
     lockScreenError.classList.add('hidden');
-    
-    if (!userUid) return;
 
     try {
       let sitePassword = localStorage.getItem('kiwi_site_password') || '1234';
@@ -1233,27 +1246,29 @@ if (lockScreenForm) {
         lockScreenError.textContent = state.language === 'he' ? "סיסמה שגויה." : "Incorrect password.";
         lockScreenError.classList.remove('hidden');
         
-        try {
-          const lockoutRef = doc(db, 'lockouts', userUid);
-          const lockoutSnap = await getDoc(lockoutRef);
-          
-          if (lockoutSnap.exists()) {
-            const currentAttempts = lockoutSnap.data().attempts || 0;
-            const newAttempts = currentAttempts + 1;
-            const updates = { attempts: increment(1) };
-            if (newAttempts >= 3) {
-              updates.locked = true;
-            }
-            await updateDoc(lockoutRef, updates);
+        if (userUid) {
+          try {
+            const lockoutRef = doc(db, 'lockouts', userUid);
+            const lockoutSnap = await getDoc(lockoutRef);
             
-            if (newAttempts >= 3) {
-              showLockedOutState();
+            if (lockoutSnap.exists()) {
+              const currentAttempts = lockoutSnap.data().attempts || 0;
+              const newAttempts = currentAttempts + 1;
+              const updates = { attempts: increment(1) };
+              if (newAttempts >= 3) {
+                updates.locked = true;
+              }
+              await updateDoc(lockoutRef, updates);
+              
+              if (newAttempts >= 3) {
+                showLockedOutState();
+              }
+            } else {
+              await setDoc(lockoutRef, { attempts: 1 });
             }
-          } else {
-            await setDoc(lockoutRef, { attempts: 1 });
+          } catch (lockoutErr) {
+            console.warn("Lockout tracking error:", lockoutErr);
           }
-        } catch (lockoutErr) {
-          console.warn("Lockout tracking error:", lockoutErr);
         }
       }
     } catch (error) {
@@ -1264,8 +1279,23 @@ if (lockScreenForm) {
   });
 }
 
-// Initialize app when window loads
-window.onload = () => {
+// Ensure app initializes immediately
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!window.appInitialized) {
+      window.appInitialized = true;
+      init();
+    }
+  });
+} else {
+  if (!window.appInitialized) {
+    window.appInitialized = true;
+    init();
+  }
+}
+
+// Background Firebase auth handling
+try {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       userUid = user.uid;
@@ -1275,12 +1305,6 @@ window.onload = () => {
         if (lockoutSnap.exists() && lockoutSnap.data().locked) {
           showLockedOutState();
         }
-        
-        // Initialize the app UI only once
-        if (!window.appInitialized) {
-          window.appInitialized = true;
-          init();
-        }
       } catch (error) {
         console.error("Error retrieving lockout state:", error);
       }
@@ -1288,12 +1312,10 @@ window.onload = () => {
       try {
         await signInAnonymously(auth);
       } catch (error) {
-        console.error("Firebase Auth Error Full:", error);
-        console.error("Firebase Auth Error Message:", error.message);
-        console.error("Firebase Auth Error Code:", error.code);
-        lockScreenError.textContent = "Error connecting to authentication server: " + (error.message || error);
-        lockScreenError.classList.remove('hidden');
+        console.warn("Firebase Anonymous Auth Notice:", error);
       }
     }
   });
-};
+} catch (e) {
+  console.warn("Auth initialization error:", e);
+}
