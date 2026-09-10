@@ -1210,7 +1210,11 @@ if (lockScreenForm) {
     if (!userUid) return;
 
     try {
-      let sitePassword = localStorage.getItem('kiwi_site_password') || '12345';
+      let sitePassword = localStorage.getItem('kiwi_site_password') || '1234';
+      if (sitePassword === '12345') {
+        sitePassword = '1234';
+        localStorage.setItem('kiwi_site_password', '1234');
+      }
       
       try {
         const configRef = doc(db, 'config', 'security');
